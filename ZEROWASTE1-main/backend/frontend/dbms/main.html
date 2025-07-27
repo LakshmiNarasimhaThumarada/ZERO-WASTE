@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroWaste - Main Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="main-bg">
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="main.html" class="nav-logo">
+                <img src="logo.jpg" alt="ZeroWaste Logo">
+                <span>ZeroWaste</span>
+            </a>
+            <div class="nav-panels">
+                <a href="donor-login.html" class="nav-panel">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    DONOR PANEL
+                </a>
+                <a href="./backend/frontend/dbms/receiver_dashboard.html" class="nav-panel" onclick="redirectToReceiverDashboard(event)">
+                    <i class="fas fa-hands-helping"></i>
+                    RECEIVER PANEL
+                </a>
+                <a href="map-dashboard.html" class="nav-panel">
+                    <i class="fas fa-map-marked-alt"></i>
+                    GEO MAP DASHBOARD
+                </a>
+                <a href="admin-login.html" class="nav-panel">
+                    <i class="fas fa-user-shield"></i>
+                    ADMIN PANEL
+                </a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Welcome, User</span>
+            </div>
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="grid-container">
+            <!-- First Row -->
+            <section class="grid-row">
+                <div class="grid-content">
+                    <h2>The Value of Food</h2>
+                    <div class="info-points">
+                        <div class="info-point">
+                            <i class="fas fa-heart"></i>
+                            <h3>Every Meal Matters</h3>
+                            <p>One-third of food produced for human consumption is lost or wasted globally. This amounts to about 1.3 billion tons per year.</p>
+                        </div>
+                        <div class="info-point">
+                            <i class="fas fa-child"></i>
+                            <h3>Impact on Lives</h3>
+                            <p>Nearly 828 million people go hungry every night. Your food donation can make a difference in someone's life.</p>
+                        </div>
+                        <div class="info-point">
+                            <i class="fas fa-seedling"></i>
+                            <h3>Environmental Impact</h3>
+                            <p>Food waste contributes to 8% of global greenhouse gas emissions. By reducing waste, we protect our planet.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-image">
+                    <img src="MAIN 1.jpg" alt="Happy child with food" class="impact-image">
+                    <div class="image-caption">
+                        <p>"Every donation brings a smile to a child's face"</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Second Row -->
+            <section class="grid-row reverse">
+                <div class="grid-content">
+                    <h2>Global Food Waste Crisis</h2>
+                    <div class="waste-facts">
+                        <div class="waste-fact">
+                            <i class="fas fa-globe-americas"></i>
+                            <p><span>1.3 Billion Tonnes</span> of food is wasted annually worldwide</p>
+                        </div>
+                        <div class="waste-fact">
+                            <i class="fas fa-users"></i>
+                            <p><span>828 Million People</span> face hunger while food goes to waste</p>
+                        </div>
+                        <div class="waste-fact">
+                            <i class="fas fa-leaf"></i>
+                            <p><span>8% of Emissions</span> come from food waste globally</p>
+                        </div>
+                        <div class="waste-fact">
+                            <i class="fas fa-tint"></i>
+                            <p><span>25% Fresh Water</span> is used to produce wasted food</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-image">
+                    <img src="main 2.jpg" alt="Food Waste Impact" class="impact-image">
+                    <div class="image-caption">
+                        <p>Together we can reduce food waste</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Third Row -->
+            <section class="grid-row">
+                <div class="grid-content">
+                    <h2>Your Donations at Work</h2>
+                    <div class="donation-facts">
+                        <div class="donation-fact">
+                            <i class="fas fa-hands-helping"></i>
+                            <h3>Food Banks & Shelters</h3>
+                            <p>Your donations directly support local food banks and shelters, providing nutritious meals to those in need.</p>
+                        </div>
+                        <div class="donation-fact">
+                            <i class="fas fa-school"></i>
+                            <h3>School Meal Programs</h3>
+                            <p>Help provide healthy meals to students through school breakfast and lunch programs.</p>
+                        </div>
+                        <div class="donation-fact">
+                            <i class="fas fa-home"></i>
+                            <h3>Community Centers</h3>
+                            <p>Support community centers that distribute food to elderly and vulnerable populations.</p>
+                        </div>
+                        <div class="donation-fact">
+                            <i class="fas fa-utensils"></i>
+                            <h3>Soup Kitchens</h3>
+                            <p>Enable soup kitchens to serve hot, nutritious meals to hundreds of people daily.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-image">
+                    <img src="main 3.jpg" alt="Food Donation Impact" class="impact-image">
+                    <div class="image-caption">
+                        <p>"Making a difference through food donations"</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fourth Row -->
+            <section class="grid-row">
+                <div class="grid-image">
+                    <img src="main 4.jpg" alt="Food Donation Review" class="impact-image">
+                    <div class="image-caption">
+                        <p>"Every donation is reviewed for quality and safety"</p>
+                    </div>
+                </div>
+                <div class="grid-content">
+                    <h2>Donation Review Process</h2>
+                    <div class="review-facts">
+                        <div class="review-fact">
+                            <i class="fas fa-clipboard-check"></i>
+                            <h3>Quality Check</h3>
+                            <p>Each donation undergoes thorough quality inspection to ensure food safety standards are met.</p>
+                        </div>
+                        <div class="review-fact">
+                            <i class="fas fa-temperature-high"></i>
+                            <h3>Storage Conditions</h3>
+                            <p>Food items are stored at appropriate temperatures and conditions to maintain freshness.</p>
+                        </div>
+                        <div class="review-fact">
+                            <i class="fas fa-clock"></i>
+                            <h3>Expiry Tracking</h3>
+                            <p>Careful monitoring of expiration dates to ensure timely distribution of food items.</p>
+                        </div>
+                        <div class="review-fact">
+                            <i class="fas fa-truck"></i>
+                            <h3>Safe Distribution</h3>
+                            <p>Proper packaging and transportation methods to preserve food quality during delivery.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section id="infinite-scroll-container" class="infinite-scroll-section">
+            <!-- Initial content will be loaded here -->
+        </section>
+
+        <!-- Loading indicator -->
+        <div id="loading-spinner" class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Scroll to top button -->
+        <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>ZeroWaste is dedicated to reducing food waste and helping those in need through efficient food donation management.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="#donor">Donor Panel</a>
+                <a href="#receiver">Receiver Panel</a>
+                <a href="#map">Geo Map</a>
+                <a href="#admin">Admin Panel</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: info@zerowaste.com</p>
+                <p>Phone: (123) 456-7890</p>
+                <p>Address: 123 Food Street, City</p>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ZeroWaste. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+    <script>
+    // Redirect to receiver dashboard function
+    function redirectToReceiverDashboard(event) {
+        event.preventDefault();
+        try {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.role === 'receiver') {
+                window.location.href = './backend/frontend/dbms/receiver_dashboard.html';
+            } else {
+                // Set up test receiver account
+                const testReceiver = {
+                    name: 'Test Receiver',
+                    email: 'receiver@fooddonation.com',
+                    role: 'receiver'
+                };
+                localStorage.setItem('user', JSON.stringify(testReceiver));
+                window.location.href = './backend/frontend/dbms/receiver_dashboard.html';
+            }
+        } catch (error) {
+            console.error('Error redirecting to receiver dashboard:', error);
+            alert('There was an error accessing the receiver dashboard. Please try again.');
+        }
+    }
+    </script>
+</body>
+</html> 

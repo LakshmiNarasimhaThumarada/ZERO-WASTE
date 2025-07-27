@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroWaste - Donor Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="donor-login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="main-bg">
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="main.html" class="nav-logo">
+                <img src="logo.jpg" alt="ZeroWaste Logo">
+                <span>ZeroWaste</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="login-container">
+        <div class="login-box">
+            <h1>Login to Donor Panel</h1>
+            
+            <div class="role-selector">
+                <h3>Select Your Role</h3>
+                <div class="role-options">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="restaurant" checked>
+                        <span class="role-card">
+                            <i class="fas fa-utensils"></i>
+                            <span>Restaurant</span>
+                        </span>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="individual">
+                        <span class="role-card">
+                            <i class="fas fa-user"></i>
+                            <span>Individual</span>
+                        </span>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="organization">
+                        <span class="role-card">
+                            <i class="fas fa-building"></i>
+                            <span>Organization</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="login-methods">
+                <div class="email-login">
+                    <h3>Login with Email</h3>
+                    <form id="loginForm" class="login-form">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="password" name="password" required>
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group remember-forgot">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="login-btn">Login</button>
+                    </form>
+                </div>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
+                <div class="oauth-login">
+                    <h3>Login with</h3>
+                    <div class="oauth-buttons">
+                        <button class="oauth-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Continue with Google</span>
+                        </button>
+                        <button class="oauth-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Continue with Facebook</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="#">Register Now</a></p>
+            </div>
+        </div>
+    </main>
+
+    <script src="donor-login.js"></script>
+</body>
+</html> 

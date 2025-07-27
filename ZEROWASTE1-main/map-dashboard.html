@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Dashboard - ZeroWaste</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <!-- Leaflet Polyline Decorator -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.css">
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --warning-color: #FFC107;
+            --danger-color: #F44336;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #45a049);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: white !important;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand img {
+            height: 35px;
+            width: 35px;
+            margin-right: 12px;
+            transition: transform 0.3s ease;
+            object-fit: contain;
+            border-radius: 50%;
+            background-color: white;
+            padding: 4px;
+        }
+
+        .navbar-brand:hover img {
+            transform: rotate(10deg);
+        }
+
+        .map-container {
+            position: relative;
+            margin-top: 70px;
+            height: calc(100vh - 70px);
+            width: 100%;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .map-controls {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .map-controls button {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            background: white;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .map-controls button:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .map-legend {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .legend-item:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .map-popup {
+            padding: 15px;
+            min-width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .map-popup h6 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .map-popup p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+            color: var(--dark-text);
+        }
+
+        .route-info {
+            position: fixed;
+            left: 20px;
+            top: 90px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .route-info h6 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .route-details {
+            margin-top: 10px;
+            padding: 8px;
+            background: var(--light-bg);
+            border-radius: 6px;
+        }
+
+        .route-details p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .get-directions-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .get-directions-btn:hover {
+            background: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .map-container {
+                padding: 15px;
+                margin-top: 60px;
+                height: calc(100vh - 60px);
+            }
+
+            .map-controls {
+                top: 80px;
+                right: 15px;
+                padding: 8px;
+            }
+
+            .map-legend {
+                bottom: 15px;
+                right: 15px;
+                padding: 12px;
+            }
+
+            .legend-item {
+                margin: 8px 0;
+            }
+
+            .legend-color {
+                width: 15px;
+                height: 15px;
+            }
+
+            .route-info {
+                left: 15px;
+                top: 80px;
+                max-width: calc(100% - 30px);
+            }
+        }
+
+        /* Add styles for the route line */
+        .route-line {
+            stroke: #2196F3;
+            stroke-width: 6px;
+            stroke-opacity: 0.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+            animation: flow 4s linear infinite;
+        }
+
+        @keyframes flow {
+            0% {
+                stroke-dasharray: 0, 20;
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dasharray: 0, 20;
+                stroke-dashoffset: -400;
+            }
+        }
+
+        .pulse-marker {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .search-box {
+            position: fixed;
+            top: 90px;
+            left: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .filter-btn {
+            padding: 5px 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Add Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color), #45a049);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer h5 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .footer-social a {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .footer {
+                text-align: center;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="logo.jpg" alt="ZeroWaste Logo">
+                ZeroWaste
+            </a>
+        </div>
+    </nav>
+
+    <!-- Map Container -->
+    <div class="map-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for food items...">
+            <div class="filter-options">
+                <button class="filter-btn active" data-distance="all">All</button>
+                <button class="filter-btn" data-distance="1">< 1km</button>
+                <button class="filter-btn" data-distance="2">< 2km</button>
+                <button class="filter-btn" data-distance="5">< 5km</button>
+            </div>
+        </div>
+        <div id="map"></div>
+        <div class="map-controls">
+            <button onclick="getCurrentLocation()" title="Center on my location">
+                <i class="fas fa-location-arrow"></i>
+            </button>
+            <button onclick="refreshLocations()" title="Refresh locations">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        <div class="route-info" style="display: none;">
+            <h6><i class="fas fa-route"></i> Route Information</h6>
+            <div class="route-details">
+                <p><i class="fas fa-clock me-2"></i>Duration: <span id="routeDuration">-</span></p>
+                <p><i class="fas fa-road me-2"></i>Distance: <span id="routeDistance">-</span></p>
+            </div>
+            <button class="get-directions-btn" onclick="openGoogleMaps()">
+                <i class="fab fa-google me-2"></i>Open in Google Maps
+            </button>
+        </div>
+        <div class="map-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2196F3;"></div>
+                <span>You</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #4CAF50;"></div>
+                <span>Available</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #FFC107;"></div>
+                <span>Near Expiry</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #F44336;"></div>
+                <span>Urgent</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <!-- About Column -->
+                <div class="col-md-4 mb-4">
+                    <h5>About ZeroWaste</h5>
+                    <p>Connecting surplus food with those in need. Our platform helps reduce food waste while making a positive impact on communities.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links Column -->
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="#map-section">Food Map</a></li>
+                        <li><a href="#donations">Available Donations</a></li>
+                        <li><a href="#requests">My Requests</a></li>
+                        <li><a href="#feedback">Give Feedback</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Column -->
+                <div class="col-md-4 mb-4">
+                    <h5>Contact Us</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone me-2"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope me-2"></i> contact@zerowaste.com</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Food Street, Hunger City, Country</li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="#" class="btn btn-outline-light">Contact Support</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <p class="mb-0">&copy; 2024 ZeroWaste. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet Polyline Decorator -->
+    <script src="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+    <script>
+        let map;
+        let userMarker;
+        let foodMarkers = [];
+        let currentRoute = null;
+        let directionsService;
+        let selectedLocation = null;
+        let activeFilter = 'all';
+        let searchTerm = '';
+
+        function initMap() {
+            // Initialize map centered on Bangalore
+            map = L.map('map').setView([12.9716, 77.5946], 12);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Remove zoom controls
+            map.zoomControl.remove();
+
+            // Initialize Google Maps Directions Service
+            directionsService = new google.maps.DirectionsService();
+
+            // For testing: If geolocation fails, use default location
+            getCurrentLocation();
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function formatDistance(distance) {
+            if (distance < 1) {
+                return Math.round(distance * 1000) + 'm';
+            }
+            return distance.toFixed(1) + 'km';
+        }
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        updateUserLocation(latitude, longitude);
+                    },
+                    error => {
+                        console.warn('Geolocation error:', error);
+                        // Use default location for testing
+                        updateUserLocation(12.9716, 77.5946);
+                    }
+                );
+            } else {
+                console.warn('Geolocation not supported');
+                // Use default location for testing
+                updateUserLocation(12.9716, 77.5946);
+            }
+        }
+
+        function updateUserLocation(latitude, longitude) {
+            // Update map
+            if (userMarker) {
+                map.removeLayer(userMarker);
+            }
+            userMarker = L.marker([latitude, longitude], {
+                icon: L.divIcon({
+                    className: 'user-marker',
+                    html: '<i class="fas fa-user-circle" style="color: #2196F3; font-size: 24px;"></i>'
+                })
+            }).addTo(map);
+
+            // Add popup to user marker
+            userMarker.bindPopup(`
+                <div class="map-popup">
+                    <h6>Your Location</h6>
+                    <p><i class="fas fa-map-marker-alt me-2"></i>${latitude.toFixed(6)}, ${longitude.toFixed(6)}</p>
+                </div>
+            `);
+
+            // Center map on user location
+            map.setView([latitude, longitude], 13);
+            
+            // Generate nearby locations
+            generateNearbyLocations(latitude, longitude);
+        }
+
+        function refreshLocations() {
+            if (userMarker) {
+                const userLatLng = userMarker.getLatLng();
+                generateNearbyLocations(userLatLng.lat, userLatLng.lng);
+            } else {
+                alert('Please enable location services first.');
+            }
+        }
+
+        function generateNearbyLocations(userLat, userLng) {
+            // Clear existing markers and route
+            foodMarkers.forEach(marker => map.removeLayer(marker));
+            foodMarkers = [];
+            if (currentRoute) {
+                map.removeLayer(currentRoute);
+            }
+            document.querySelector('.route-info').style.display = 'none';
+
+            // Sample data for testing
+            const sampleDonations = [
+                {
+                    donor_name: "City Food Bank",
+                    organization_name: "Food Bank India",
+                    phone_number: "+91 98765 43210",
+                    latitude: userLat + 0.01,
+                    longitude: userLng + 0.01,
+                    status: "available",
+                    food_items: "Rice, Dal, Vegetables, Bread",
+                    expiry_date: "2024-03-25 18:00:00",
+                    distance: 1.2
+                },
+                {
+                    donor_name: "Community Kitchen",
+                    organization_name: "NGO Helping Hands",
+                    phone_number: "+91 98765 43211",
+                    latitude: userLat - 0.008,
+                    longitude: userLng + 0.015,
+                    status: "near_expiry",
+                    food_items: "Curry, Chapati, Mixed Vegetables",
+                    expiry_date: "2024-03-23 20:00:00",
+                    distance: 0.8
+                },
+                {
+                    donor_name: "Green Restaurant",
+                    organization_name: "Green Foods Ltd",
+                    phone_number: "+91 98765 43212",
+                    latitude: userLat + 0.005,
+                    longitude: userLng - 0.012,
+                    status: "urgent",
+                    food_items: "Biryani, Salad, Desserts",
+                    expiry_date: "2024-03-22 21:00:00",
+                    distance: 1.5
+                },
+                {
+                    donor_name: "Temple Kitchen",
+                    organization_name: "Temple Trust",
+                    phone_number: "+91 98765 43213",
+                    latitude: userLat - 0.012,
+                    longitude: userLng - 0.008,
+                    status: "available",
+                    food_items: "Khichdi, Sweet Rice, Fruits",
+                    expiry_date: "2024-03-26 19:00:00",
+                    distance: 1.8
+                },
+                {
+                    donor_name: "Hotel Sunshine",
+                    organization_name: "Sunshine Hotels Pvt Ltd",
+                    phone_number: "+91 98765 43214",
+                    latitude: userLat + 0.018,
+                    longitude: userLng + 0.018,
+                    status: "near_expiry",
+                    food_items: "Sandwiches, Pasta, Juice",
+                    expiry_date: "2024-03-23 22:00:00",
+                    distance: 2.2
+                },
+                {
+                    donor_name: "Local Cafe",
+                    organization_name: "Cafe Corner",
+                    phone_number: "+91 98765 43215",
+                    latitude: userLat - 0.015,
+                    longitude: userLng + 0.022,
+                    status: "urgent",
+                    food_items: "Cakes, Pastries, Coffee",
+                    expiry_date: "2024-03-22 15:00:00",
+                    distance: 2.5
+                },
+                {
+                    donor_name: "University Canteen",
+                    organization_name: "City University",
+                    phone_number: "+91 98765 43216",
+                    latitude: userLat + 0.022,
+                    longitude: userLng - 0.015,
+                    status: "available",
+                    food_items: "Meals, Snacks, Beverages",
+                    expiry_date: "2024-03-27 14:00:00",
+                    distance: 2.8
+                },
+                {
+                    donor_name: "Office Cafeteria",
+                    organization_name: "Tech Park",
+                    phone_number: "+91 98765 43217",
+                    latitude: userLat - 0.025,
+                    longitude: userLng - 0.025,
+                    status: "near_expiry",
+                    food_items: "Lunch Boxes, Salads",
+                    expiry_date: "2024-03-23 18:00:00",
+                    distance: 3.0
+                },
+                {
+                    donor_name: "Mall Food Court",
+                    organization_name: "City Mall",
+                    phone_number: "+91 98765 43218",
+                    latitude: userLat + 0.025,
+                    longitude: userLng + 0.025,
+                    status: "urgent",
+                    food_items: "Fast Food, Beverages",
+                    expiry_date: "2024-03-22 20:00:00",
+                    distance: 3.2
+                }
+            ];
+
+            // Filter locations based on search and distance
+            const filteredLocations = sampleDonations.filter(loc => {
+                const matchesSearch = loc.food_items.toLowerCase().includes(searchTerm) ||
+                                   loc.donor_name.toLowerCase().includes(searchTerm);
+                const matchesDistance = activeFilter === 'all' || loc.distance <= parseInt(activeFilter);
+                return matchesSearch && matchesDistance;
+            });
+
+            // Add markers for filtered locations
+            filteredLocations.forEach(loc => {
+                const markerColor = getStatusColor(loc.status);
+
+                const marker = L.circleMarker([loc.latitude, loc.longitude], {
+                    radius: 10,
+                    fillColor: markerColor,
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+
+                const popupContent = `
+                    <div class="map-popup">
+                        <h6>${loc.donor_name}</h6>
+                        <p><i class="fas fa-building me-2"></i>${loc.organization_name}</p>
+                        <p><i class="fas fa-phone me-2"></i>${loc.phone_number}</p>
+                        <p><i class="fas fa-utensils me-2"></i>${loc.food_items}</p>
+                        <p><i class="fas fa-clock me-2"></i>Expires: ${formatDate(loc.expiry_date)}</p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i>${formatDistance(loc.distance)} away</p>
+                        <button class="get-directions-btn" onclick="getDirections(${loc.latitude}, ${loc.longitude}, '${loc.donor_name}')">
+                            Get Directions
+                        </button>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent);
+                marker.addTo(map);
+                foodMarkers.push(marker);
+            });
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'available': return '#4CAF50'; // Green
+                case 'near_expiry': return '#FFC107'; // Yellow
+                case 'urgent': return '#F44336'; // Red
+                default: return '#2196F3'; // Blue for user
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getDirections(destLat, destLng, locationName) {
+            if (!userMarker) {
+                alert('Please enable location services first.');
+                return;
+            }
+
+            const userLatLng = userMarker.getLatLng();
+            selectedLocation = { lat: destLat, lng: destLng, name: locationName };
+
+            const request = {
+                origin: new google.maps.LatLng(userLatLng.lat, userLatLng.lng),
+                destination: new google.maps.LatLng(destLat, destLng),
+                travelMode: 'DRIVING'
+            };
+
+            directionsService.route(request, (result, status) => {
+                if (status === 'OK') {
+                    // Clear existing route
+                    if (currentRoute) {
+                        map.removeLayer(currentRoute);
+                    }
+
+                    // Draw the route on the map
+                    const route = result.routes[0].overview_path;
+                    const routePoints = route.map(point => [point.lat(), point.lng()]);
+
+                    // Create glow effect
+                    const glowLine = L.polyline(routePoints, {
+                        className: 'route-glow',
+                        interactive: false
+                    }).addTo(map);
+
+                    // Enhanced route line with animation
+                    const mainLine = L.polyline(routePoints, {
+                        className: 'route-line',
+                        interactive: false,
+                        dashArray: '10, 20',
+                        dashOffset: '0'
+                    }).addTo(map);
+
+                    // Add arrow decorations
+                    const arrowDecorator = L.polylineDecorator(mainLine, {
+                        patterns: [
+                            {
+                                offset: 25,
+                                repeat: 100,
+                                symbol: L.Symbol.arrowHead({
+                                    pixelSize: 15,
+                                    pathOptions: {
+                                        color: '#2196F3',
+                                        fillOpacity: 1,
+                                        weight: 2
+                                    }
+                                })
+                            }
+                        ]
+                    }).addTo(map);
+
+                    // Group all route elements
+                    currentRoute = L.layerGroup([glowLine, mainLine, arrowDecorator]);
+
+                    // Animated start marker
+                    const startMarker = L.marker([userLatLng.lat, userLatLng.lng], {
+                        icon: L.divIcon({
+                            className: 'start-marker pulse-marker',
+                            html: '<i class="fas fa-circle" style="color: #2196F3; font-size: 12px;"></i>',
+                            iconSize: [12, 12]
+                        })
+                    });
+
+                    const endMarker = L.marker([destLat, destLng], {
+                        icon: L.divIcon({
+                            className: 'end-marker',
+                            html: '<i class="fas fa-flag" style="color: #4CAF50; font-size: 16px;"></i>',
+                            iconSize: [16, 16]
+                        })
+                    });
+
+                    currentRoute.addLayer(startMarker);
+                    currentRoute.addLayer(endMarker);
+                    currentRoute.addTo(map);
+
+                    // Fit the map to show the entire route
+                    const bounds = L.latLngBounds(routePoints);
+                    map.fitBounds(bounds, {
+                        padding: [50, 50],
+                        animate: true,
+                        duration: 0.5
+                    });
+
+                    // Update route information
+                    const duration = result.routes[0].legs[0].duration.text;
+                    const distance = result.routes[0].legs[0].distance.text;
+                    
+                    document.getElementById('routeDuration').textContent = duration;
+                    document.getElementById('routeDistance').textContent = distance;
+                    
+                    const routeInfo = document.querySelector('.route-info');
+                    routeInfo.style.display = 'block';
+                    routeInfo.style.animation = 'fadeIn 0.3s ease-in-out';
+                } else {
+                    alert('Could not calculate route. Please try again.');
+                }
+            });
+        }
+
+        function openGoogleMaps() {
+            if (!selectedLocation || !userMarker) return;
+            
+            const userLatLng = userMarker.getLatLng();
+            const url = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat},${userLatLng.lng}&destination=${selectedLocation.lat},${selectedLocation.lng}`;
+            window.open(url, '_blank');
+        }
+
+        // Add search and filter event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            refreshLocations();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                activeFilter = e.target.dataset.distance;
+                refreshLocations();
+            });
+        });
+
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', initMap);
+
+        // Add CSS animation for route info panel
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .route-info {
+                transition: all 0.3s ease-in-out;
+            }
+
+            .leaflet-polyline {
+                transition: all 0.3s ease;
+            }
+
+            @keyframes dash {
+                to {
+                    stroke-dashoffset: -30;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 

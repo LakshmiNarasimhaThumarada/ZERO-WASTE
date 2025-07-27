@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <i data-lucide="scale" class="icon green"></i>
+        <h1>Admin Panel</h1>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <button class="nav-button active" data-tab="overview">
+          <i data-lucide="leaf"></i>
+          Overview
+        </button>
+        <button class="nav-button" data-tab="users">
+          <i data-lucide="users"></i>
+          User Management
+        </button>
+        <button class="nav-button" data-tab="food">
+          <i data-lucide="utensils"></i>
+          Food Posts
+        </button>
+        <button class="nav-button" data-tab="ngo">
+          <i data-lucide="building-2"></i>
+          NGO Management
+        </button>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <h2>Dashboard Overview</h2>
+        <div class="dropdown" id="overview-dropdown">
+          <select class="dropdown-select">
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="365">Last year</option>
+          </select>
+          <i data-lucide="chevron-down" class="dropdown-icon"></i>
+        </div>
+      </div>
+
+      <!-- Content Sections -->
+      <div class="content-section active" id="overview">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <i data-lucide="utensils" class="icon green"></i>
+              <span class="trend positive">+12.5%</span>
+            </div>
+            <h3>Food Saved</h3>
+            <p>1250 kg</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <i data-lucide="users" class="icon blue"></i>
+              <span class="trend positive">+8.1%</span>
+            </div>
+            <h3>People Served</h3>
+            <p>3,750</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <i data-lucide="leaf" class="icon emerald"></i>
+              <span class="trend positive">+15.3%</span>
+            </div>
+            <h3>CO₂ Prevented</h3>
+            <p>2.5 tons</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <i data-lucide="user-x" class="icon red"></i>
+              <span class="trend negative">-2.4%</span>
+            </div>
+            <h3>Flagged Users</h3>
+            <p>12</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <i data-lucide="flag" class="icon orange"></i>
+              <span class="trend negative">-5.2%</span>
+            </div>
+            <h3>Expired Posts</h3>
+            <p>8</p>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <i data-lucide="building-2" class="icon purple"></i>
+              <span class="trend positive">+3.8%</span>
+            </div>
+            <h3>Active NGOs</h3>
+            <p>25</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section" id="users">
+        <!-- User Management Table -->
+        <div class="table-container">
+          <div class="table-header">
+            <h3>User Management</h3>
+            <button class="add-button">Add User</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Last Active</th>
+                <th>Donations</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar">
+                      <i data-lucide="user-check"></i>
+                    </div>
+                    <div class="user-info">
+                      <div class="user-name">John Doe</div>
+                      <div class="user-email">john@example.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Donor</td>
+                <td><span class="status active">Active</span></td>
+                <td>2024-03-18</td>
+                <td>15</td>
+                <td>
+                  <div class="action-buttons">
+                    <button><i data-lucide="ban"></i></button>
+                    <button><i data-lucide="more-vertical"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar">
+                      <i data-lucide="user-check"></i>
+                    </div>
+                    <div class="user-info">
+                      <div class="user-name">Jane Smith</div>
+                      <div class="user-email">jane@example.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>NGO Admin</td>
+                <td><span class="status active">Active</span></td>
+                <td>2024-03-17</td>
+                <td>8</td>
+                <td>
+                  <div class="action-buttons">
+                    <button><i data-lucide="ban"></i></button>
+                    <button><i data-lucide="more-vertical"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-section" id="food">
+        <!-- Food Posts Table -->
+        <div class="table-container">
+          <div class="table-header">
+            <h3>Food Posts</h3>
+            <button class="add-button">Add Post</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th>Donor</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Surplus Bread</td>
+                <td>50kg</td>
+                <td>2024-03-20</td>
+                <td><span class="status active">Active</span></td>
+                <td>Local Bakery</td>
+                <td>
+                  <div class="action-buttons">
+                    <button><i data-lucide="more-vertical"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Fresh Vegetables</td>
+                <td>30kg</td>
+                <td>2024-03-19</td>
+                <td><span class="status claimed">Claimed</span></td>
+                <td>Farm Fresh</td>
+                <td>
+                  <div class="action-buttons">
+                    <button><i data-lucide="more-vertical"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-section" id="ngo">
+        <!-- NGO Management Table -->
+        <div class="table-container">
+          <div class="table-header">
+            <h3>NGO Management</h3>
+            <button class="add-button">Add NGO</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>People Served</th>
+                <th>Last Distribution</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Food Bank Foundation</td>
+                <td>New York</td>
+                <td><span class="status active">Active</span></td>
+                <td>1,200</td>
+                <td>2024-03-17</td>
+                <td>
+                  <div class="action-buttons">
+                    <button><i data-lucide="more-vertical"></i></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Helping Hands</td>
+                <td>Chicago</td>
+                <td><span class="status active">Active</span></td>
+                <td>850</td>
+                <td>2024-03-16</td>
+                <td>
+                  <div class="action-buttons">
+                    <button><i data-lucide="more-vertical"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Handle nav button clicks and content switching
+    document.querySelectorAll('.nav-button').forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active button
+        document.querySelector('.nav-button.active').classList.remove('active');
+        button.classList.add('active');
+
+        // Update content section
+        const tabId = button.getAttribute('data-tab');
+        document.querySelector('.content-section.active').classList.remove('active');
+        document.getElementById(tabId).classList.add('active');
+
+        // Update header text
+        const headerText = {
+          'overview': 'Dashboard Overview',
+          'users': 'User Management',
+          'food': 'Food Posts',
+          'ngo': 'NGO Management'
+        }[tabId];
+        document.querySelector('.header h2').textContent = headerText;
+
+        // Show/hide time range dropdown
+        const dropdown = document.getElementById('overview-dropdown');
+        dropdown.style.display = tabId === 'overview' ? 'block' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

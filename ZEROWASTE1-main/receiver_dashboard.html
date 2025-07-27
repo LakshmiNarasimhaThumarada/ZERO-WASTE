@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receiver Dashboard - ZeroWaste</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --warning-color: #FFC107;
+            --danger-color: #F44336;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #45a049);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: white !important;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand img {
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover img {
+            transform: rotate(10deg);
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .user-greeting {
+            color: white;
+            font-weight: 500;
+            margin-right: 1rem;
+        }
+
+        .section {
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background-color: var(--light-bg);
+            border-bottom: none;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: var(--light-bg);
+            border-bottom: none;
+            font-weight: 600;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .feedback-form {
+            background-color: var(--light-bg);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+
+        .rating {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .rating i {
+            color: #FFC107;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .rating i:hover {
+            transform: scale(1.2);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary-color), #45a049);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .stats-card h3 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .stats-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Map Section */
+        .map-container {
+            position: relative;
+            height: 500px;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .map-main {
+            position: relative;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .map-sidebar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1001;
+            display: flex;
+            gap: 10px;
+        }
+
+        .map-controls button {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            background: white;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .map-controls button:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .distance-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: var(--light-bg);
+            border-radius: 8px;
+        }
+
+        .distance-panel h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .distance-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .distance-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .map-legend {
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .map-popup {
+            padding: 10px;
+            min-width: 200px;
+        }
+
+        .map-popup h6 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .map-popup p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+
+        @media (max-width: 992px) {
+            .map-container {
+                height: 600px;
+            }
+
+            .map-sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="logo.png" alt="ZeroWaste Logo" height="30" class="d-inline-block align-text-top me-2">
+                ZeroWaste
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#map">
+                            <i class="fas fa-map-marker-alt me-2"></i>Map
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#donations">
+                            <i class="fas fa-utensils me-2"></i>Donations
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#requests">
+                            <i class="fas fa-hand-holding-heart me-2"></i>Requests
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#feedback">
+                            <i class="fas fa-comment-alt me-2"></i>Feedback
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="user-greeting" id="userGreeting">
+                        <i class="fas fa-user-circle me-2"></i>Welcome, User
+                    </span>
+                    <button class="btn btn-outline-light" onclick="logout()">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Stats Section -->
+        <div class="row mb-4">
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="stats-card">
+                    <h3>24</h3>
+                    <p>Active Donations</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--secondary-color), #1976D2);">
+                    <h3>12</h3>
+                    <p>Pending Requests</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--warning-color), #FFA000);">
+                    <h3>8</h3>
+                    <p>Near Expiry</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--danger-color), #D32F2F);">
+                    <h3>3</h3>
+                    <p>Urgent Items</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <section id="map" class="section" data-aos="fade-up">
+            <div class="section-header">
+                <h2>Food Availability Map</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" onclick="getCurrentLocation()">
+                        <i class="fas fa-location-arrow me-2"></i>Use My Location
+                    </button>
+                    <button class="btn btn-primary" onclick="refreshLocations()">
+                        <i class="fas fa-sync-alt me-2"></i>Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="map-container">
+                <div class="map-main">
+                    <div id="map"></div>
+                    <div class="map-controls">
+                        <button onclick="getCurrentLocation()" title="Center on my location">
+                            <i class="fas fa-location-arrow"></i>
+                        </button>
+                        <button onclick="refreshLocations()" title="Refresh locations">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="map-sidebar">
+                    <div class="distance-panel">
+                        <h6>Nearby Food Spots</h6>
+                        <div id="distanceList"></div>
+                    </div>
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #2196F3;"></div>
+                            <span>You</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #4CAF50;"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #FFC107;"></div>
+                            <span>Near Expiry</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #F44336;"></div>
+                            <span>Urgent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Donations Section -->
+        <section id="donations" class="section" data-aos="fade-up">
+            <div class="section-header">
+                <h2>Available Donations</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-filter me-2"></i>Filter
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>New Request
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Vegetable Biryani</h5>
+                            <span class="badge bg-success status-badge">Available</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <i class="fas fa-utensils me-2"></i>Quantity: 20 servings
+                            </p>
+                            <p class="card-text">
+                                <i class="fas fa-clock me-2"></i>Expires: 2024-03-25
+                            </p>
+                            <p class="card-text">
+                                <i class="fas fa-map-marker-alt me-2"></i>Location: Local Food Bank
+                            </p>
+                            <button class="btn btn-primary w-100">Request Donation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Requests Section -->
+        <section id="requests" class="section" data-aos="fade-up">
+            <div class="section-header">
+                <h2>Your Requests</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-history me-2"></i>History
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#REQ001</td>
+                            <td>Vegetable Biryani</td>
+                            <td>5 servings</td>
+                            <td><span class="badge bg-warning">Pending</span></td>
+                            <td>2024-03-20</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Feedback Section -->
+        <section id="feedback" class="section" data-aos="fade-up">
+            <div class="section-header">
+                <h2>Feedback</h2>
+            </div>
+            <div class="feedback-form">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Donation ID</label>
+                        <input type="text" class="form-control" placeholder="Enter donation ID">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="rating">
+                            <i class="fas fa-star" data-rating="1"></i>
+                            <i class="fas fa-star" data-rating="2"></i>
+                            <i class="fas fa-star" data-rating="3"></i>
+                            <i class="fas fa-star" data-rating="4"></i>
+                            <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Comments</label>
+                        <textarea class="form-control" rows="3" placeholder="Share your experience"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Feedback
+                    </button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize map
+        let map;
+        let userMarker;
+        let foodMarkers = [];
+        
+        function initMap() {
+            // Initialize map
+            map = L.map('map').setView([20.5937, 78.9629], 5);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Get user's location
+            getCurrentLocation();
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function formatDistance(distance) {
+            if (distance < 1) {
+                return Math.round(distance * 1000) + 'm';
+            }
+            return distance.toFixed(1) + 'km';
+        }
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        // Update map
+                        if (userMarker) {
+                            map.removeLayer(userMarker);
+                        }
+                        userMarker = L.marker([latitude, longitude], {
+                            icon: L.divIcon({
+                                className: 'user-marker',
+                                html: '<i class="fas fa-user-circle" style="color: #2196F3; font-size: 24px;"></i>'
+                            })
+                        }).addTo(map);
+
+                        // Add popup to user marker
+                        userMarker.bindPopup(`
+                            <div class="map-popup">
+                                <h6>Your Location</h6>
+                                <p>Latitude: ${latitude.toFixed(6)}</p>
+                                <p>Longitude: ${longitude.toFixed(6)}</p>
+                            </div>
+                        `);
+
+                        // Center map on user location
+                        map.setView([latitude, longitude], 13);
+                        
+                        // Generate nearby locations
+                        generateNearbyLocations(latitude, longitude);
+                    },
+                    error => {
+                        console.error('Error getting location:', error);
+                        alert('Unable to get your location. Please enable location services.');
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        function refreshLocations() {
+            if (userMarker) {
+                const userLatLng = userMarker.getLatLng();
+                generateNearbyLocations(userLatLng.lat, userLatLng.lng);
+            } else {
+                alert('Please enable location services first.');
+            }
+        }
+
+        function generateNearbyLocations(userLat, userLng) {
+            // Clear existing markers
+            foodMarkers.forEach(marker => map.removeLayer(marker));
+            foodMarkers = [];
+
+            // Sample nearby locations
+            const locations = [
+                {
+                    name: "Local Food Bank",
+                    lat: userLat + 0.01,
+                    lng: userLng + 0.01,
+                    status: "available",
+                    foodItems: ["Rice", "Vegetables", "Bread"],
+                    contact: "+91 9876543210",
+                    expiry: "2024-03-25"
+                },
+                {
+                    name: "Community Kitchen",
+                    lat: userLat - 0.01,
+                    lng: userLng + 0.02,
+                    status: "near-expiry",
+                    foodItems: ["Curry", "Chapati", "Salad"],
+                    contact: "+91 9876543211",
+                    expiry: "2024-03-22"
+                },
+                {
+                    name: "Neighborhood Restaurant",
+                    lat: userLat + 0.02,
+                    lng: userLng - 0.01,
+                    status: "urgent",
+                    foodItems: ["Biryani", "Sweets", "Snacks"],
+                    contact: "+91 9876543212",
+                    expiry: "2024-03-20"
+                }
+            ];
+
+            // Calculate distances and sort locations
+            const locationsWithDistance = locations.map(loc => ({
+                ...loc,
+                distance: calculateDistance(userLat, userLng, loc.lat, loc.lng)
+            })).sort((a, b) => a.distance - b.distance);
+
+            // Update distance panel
+            const distanceList = document.getElementById('distanceList');
+            distanceList.innerHTML = locationsWithDistance.map(loc => `
+                <div class="distance-item" onclick="focusLocation(${loc.lat}, ${loc.lng})">
+                    <div class="d-flex justify-content-between">
+                        <strong>${loc.name}</strong>
+                        <span>${formatDistance(loc.distance)}</span>
+                    </div>
+                    <small class="text-muted">${loc.foodItems.join(', ')}</small>
+                </div>
+            `).join('');
+
+            // Add markers to map
+            locationsWithDistance.forEach(loc => {
+                const markerColor = loc.status === 'available' ? '#4CAF50' :
+                                  loc.status === 'near-expiry' ? '#FFC107' : '#F44336';
+
+                const marker = L.circleMarker([loc.lat, loc.lng], {
+                    radius: 8,
+                    fillColor: markerColor,
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+
+                const popupContent = `
+                    <div class="map-popup">
+                        <h6>${loc.name}</h6>
+                        <p><i class="fas fa-phone me-2"></i>${loc.contact}</p>
+                        <p><i class="fas fa-utensils me-2"></i>${loc.foodItems.join(', ')}</p>
+                        <p><i class="fas fa-clock me-2"></i>Expires: ${loc.expiry}</p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i>${formatDistance(loc.distance)} away</p>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent);
+                marker.addTo(map);
+                foodMarkers.push(marker);
+            });
+        }
+
+        function focusLocation(lat, lng) {
+            map.setView([lat, lng], 15);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map
+            initMap();
+
+            // Initialize AOS
+            AOS.init({
+                duration: 800,
+                once: true
+            });
+
+            // Set user name
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                document.getElementById('userGreeting').innerHTML = `
+                    <i class="fas fa-user-circle me-2"></i>Welcome, ${user.name}
+                `;
+            } else {
+                window.location.href = 'index.html';
+            }
+
+            // Handle smooth scrolling
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').slice(1);
+                    document.getElementById(targetId).scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+
+            // Handle star rating
+            document.querySelectorAll('.rating i').forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = this.getAttribute('data-rating');
+                    document.querySelectorAll('.rating i').forEach(s => {
+                        s.style.color = s.getAttribute('data-rating') <= rating ? '#ffc107' : '#ccc';
+                    });
+                });
+            });
+        });
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 
