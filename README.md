@@ -35,7 +35,7 @@ ZeroWaste acts as a **bridge between donors and receivers** by:
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 - **Frontend:** HTML, CSS, JavaScript  
 - **Maps Integration:** Leaflet.js (Google Maps alternative)  
 - **UI Framework:** Bootstrap (for responsive design)  
